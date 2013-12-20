@@ -24,7 +24,7 @@ import utils.{GravatarHelper, PasswordHasher}
 import play.api.{Play, Application}
 import Play.current
 import com.typesafe.plugin._
-import securesocial.controllers.TemplatesPlugin
+import securesocial.controllers.{ProviderController, TemplatesPlugin}
 import org.joda.time.DateTime
 
 /**
@@ -52,7 +52,7 @@ class UsernamePasswordProvider(application: Application) extends IdentityProvide
           Right(SocialUser(user))
         )
         result.getOrElse(
-          Left(badRequest(UsernamePasswordProvider.loginForm, request, Some(InvalidCredentials)))
+          Left(Results.Redirect(ProviderController.loginFailedUrl))
         )
       }
     )
