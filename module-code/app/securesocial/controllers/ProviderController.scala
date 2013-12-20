@@ -39,6 +39,12 @@ object ProviderController extends Controller
   val onLoginGoTo = "securesocial.onLoginGoTo"
 
   /**
+   * The property that specify page the user will be redirected if authentication failed.
+   */
+  val onLoginFailedGoTo = "securesocial.onLoginFailedGoTo"
+
+
+  /**
    * The root path
    */
   val Root = "/"
@@ -63,6 +69,15 @@ object ProviderController extends Controller
    */
   def landingUrl = Play.configuration.getString(onLoginGoTo).getOrElse(
     Play.configuration.getString(ApplicationContext).getOrElse(Root)
+  )
+
+  /**
+   * The url where the user will be redirected if authentication is failed.
+   *
+   * @return
+   */
+  def loginFailedUrl = Play.configuration.getString(onLoginFailedGoTo).getOrElse(
+    RoutesHelper.login().url
   )
 
   /**
@@ -99,7 +114,7 @@ object ProviderController extends Controller
 
           case other: Throwable => {
             Logger.error("Unable to log user in. An exception was thrown", other)
-            Redirect(RoutesHelper.login()).flashing("error" -> Messages("securesocial.login.errorLoggingIn"))
+            Redirect(loginFailedUrl).flashing("error" -> Messages("securesocial.login.errorLoggingIn"))
           }
         }
       }
